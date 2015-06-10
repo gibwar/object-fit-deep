@@ -213,33 +213,6 @@
 		wrapperElement.appendChild(replacedElement);
 
 		objectFit.orientation(replacedElement);
-
-		var resizeTimer = null;
-		var resizeAction = function () {
-			if (resizeTimer !== null) {
-				window.cancelAnimationFrame(resizeTimer);
-			}
-			resizeTimer = window.requestAnimationFrame(function(){
-				objectFit.orientation(replacedElement);
-			});
-		};
-
-		switch (args.fittype) {
-			default:
-			break;
-
-			case 'contain':
-			case 'cover':
-				if (window.addEventListener) {
-					replacedElement.addEventListener('load', resizeAction, false);
-					window.addEventListener('resize', resizeAction, false);
-					window.addEventListener('orientationchange', resizeAction, false);
-				} else {
-					replacedElement.attachEvent('onload', resizeAction);
-					window.attachEvent('onresize', resizeAction);
-				}
-			break;
-		}
 	};
 
 	objectFit.listen = function (args) {
@@ -378,6 +351,31 @@
 					});
 				}
 			}
+
+			// Use a global listener and look for elements of x-object-fit. This allows
+			// us to use one event listener on the page rather than adding in an additional
+			// event listener on each element we process. This does mean that if we're not
+			// in 'cover' or 'contain' we still attempt to process.
+			var processOrientation = function () {
+				var elements = document.querySelectorAll("x-object-fit > *");
+				for (var i = 0; i < elements.length; ++i) {
+					objectFit.orientation(elements[i]);
+				}
+
+				resizeTimer = null;
+			};
+
+			var resizeHandler = function () {
+				 if (resizeTimer !== null) {
+					 window.cancelAnimationFrame(resizeTimer);
+				 }
+
+				resizeTimer = window.requestAnimationFrame(processOrientation);
+			};
+
+			var resizeTimer = null;
+			window.addEventListener("resize", resizeHandler, false);
+			window.addEventListener("orientationchange", resizeHandler, false);
 		} else {
 			if (objectFit._debug && window.console) {
 				console.log('object-fit natively supported');
