@@ -1,15 +1,15 @@
 {
-  "name": "object-fit",
-  "title": "object-fit polyfill",
-  "description": "Polyfill for the CSS object-fit property to fit images into containers",
-  "version": "0.4.2",
-  "homepage": "https://github.com/anselmh/object-fit",
+  "name": "object-fit-deep",
+  "title": "object-fit polyfill with child checking",
+  "description": "Polyfill for the CSS object-fit property to fit images into containers with support for deep nested attachments",
+  "version": "0.4.2-deep",
+  "homepage": "https://github.com/gibwar/object-fit-deep",
   "repository": {
     "type": "git",
-    "url": "git://github.com/anselmh/object-fit.git"
+    "url": "git://github.com/gibwar/object-fit-deep.git"
   },
   "bugs": {
-    "url": "https://github.com/anselmh/object-fit/issues"
+    "url": "https://github.com/gibwar/object-fit-deep/issues"
   },
   "license": "MIT",
   "scripts": {
@@ -19,8 +19,7 @@
     "node": ">=0.10"
   },
   "dependencies": {
-    "raf.js": "0.0.4",
-    "element-closest": "1.0.2"
+    "raf.js": "0.0.4"
   },
   "devDependencies": {
     "grunt": "0.4.x",

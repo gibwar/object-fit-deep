@@ -1,6 +1,6 @@
 {
-  "name": "object-fit",
-  "version": "0.4.2",
+  "name": "object-fit-deep",
+  "version": "0.4.2-deep",
   "main": [
     "dist/polyfill.object-fit.js",
     "dist/polyfill.object-fit.css"
@@ -13,7 +13,6 @@
     "tests"
   ],
   "dependencies": {
-    "closest": "1.0.2",
     "raf.js": "0.0.4"
   }
 }
