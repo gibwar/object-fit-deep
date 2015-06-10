@@ -243,39 +243,27 @@
 	};
 
 	objectFit.listen = function (args) {
-		var domInsertedAction = function (element){
-			var i = 0;
-			var argsLength = args.length;
-
-			for (; i < argsLength; i++) {
-				if ((element.mozMatchesSelector && element.mozMatchesSelector(args[i].selector)) ||
-					(element.msMatchesSelector && element.msMatchesSelector(args[i].selector)) ||
-					(element.oMatchesSelector && element.oMatchesSelector(args[i].selector)) ||
-					(element.webkitMatchesSelector && element.webkitMatchesSelector(args[i].selector))
-				) {
-					args[i].replacedElements = [element];
-					objectFit.process(args[i]);
-
-					if (objectFit._debug && window.console) {
-						console.log('Matching node inserted: ' + element.nodeName);
-					}
-				}
+		var scheduleId = null;
+		var scheduleScan = function (disconnectListener, reconnectListener) {
+			if (scheduleId) {
+				window.clearTimeout(scheduleId);
 			}
+
+			scheduleId = window.setTimeout(function () {
+				scanDocument(disconnectListener, reconnectListener);
+				scheduleId = null;
+			}, 500);
 		};
 
-		var domInsertedObserverFunction = function (element) {
-			objectFit.observer.disconnect();
-			domInsertedAction(element);
-			objectFit.observer.observe(document.documentElement, {
-				childList: true,
-				subtree: true
-			});
-		};
+		var scanDocument = function (disconnectListener, reconnectListener) {
+			disconnectListener();
 
-		var domInsertedEventFunction = function (event) {
-			window.removeEventListener('DOMNodeInserted', domInsertedEventFunction, false);
-			domInsertedAction(event.target);
-			window.addEventListener('DOMNodeInserted', domInsertedEventFunction, false);
+			for (var i = 0; i < args.length; ++i) {
+				args[i].replacedElements = document.querySelectorAll(args[i].selector);
+				objectFit.process(args[i]);
+			}
+
+			reconnectListener();
 		};
 
 		var domRemovedAction = function (element) {
@@ -303,6 +291,15 @@
 			window.addEventListener('DOMNodeRemoved', domRemovedEventFunction, false);
 		};
 
+		var domInsertedEventFunction = function () {
+			scheduleScan(function () {
+				window.removeEventListener('DOMNodeInserted', domInsertedEventFunction, false);
+			}, function () {
+				window.addEventListener('DOMNodeInserted', domInsertedEventFunction, false);
+			});
+		};
+
+
 		if (window.MutationObserver) {
 			if (objectFit._debug && window.console) {
 				console.log('DOM MutationObserver');
@@ -311,10 +308,14 @@
 			this.observer = new MutationObserver(function(mutations) {
 				mutations.forEach(function(mutation) {
 					if (mutation.addedNodes && mutation.addedNodes.length) {
-						var nodes = mutation.addedNodes;
-						for (var i = 0, nodesLength = nodes.length; i < nodesLength; i++) {
-							domInsertedObserverFunction(nodes[i]);
-						}
+						scheduleScan(function () {
+							objectFit.observer.disconnect();
+						}, function () {
+							objectFit.observer.observe(document.documentElement, {
+								childList: true,
+								subtree: true
+							});
+						});
 					}
 					if (mutation.removedNodes && mutation.removedNodes.length) {
 						domRemovedObserverFunction(mutation.target);
