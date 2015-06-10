@@ -8,9 +8,9 @@
  *
  */
 
-'use strict';
-
 (function () {
+	'use strict';
+
 	// polyfill window.getMatchedCSSRules() in FireFox 6+
 	if (typeof window.getMatchedCSSRules === 'function') {
 		return;
