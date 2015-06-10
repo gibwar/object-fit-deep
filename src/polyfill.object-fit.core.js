@@ -13,7 +13,7 @@
 	'use strict';
 
 	// Storage variable
-	var objectFit = {};
+	var objectFit = {}, defaultStyleCache = {};
 
 	objectFit._debug = false;
 
@@ -33,6 +33,12 @@
 	};
 
 	objectFit.getDefaultComputedStyle = function(element){
+		// Assume that items with a src attribute are an image and that the image
+		// referenced won't change dimensions (at least while we're loaded this session).
+		if (element.src && defaultStyleCache[element.src]) {
+			return defaultStyleCache[element.src];
+		}
+
 		var newelement = element.cloneNode(true);
 		var styles = {};
 		var iframe = document.createElement('iframe');
@@ -48,11 +54,12 @@
 		var property;
 
 		for (property in defaultComputedStyle) {
-			if (defaultComputedStyle.getPropertyValue === true) {
-				value = defaultComputedStyle.getPropertyValue(property);
-			} else {
-				value = defaultComputedStyle[property];
+			// Filter out unneeded properties that are functions or are the "0" ~ "210" ones.
+			if (typeof defaultComputedStyle[property] === "function" || parseInt(property, 10) > 0) {
+				continue;
 			}
+
+			value = defaultComputedStyle[property];
 
 			if (value !== null) {
 				switch (property) {
@@ -72,6 +79,10 @@
 		}
 
 		document.body.removeChild(iframe);
+
+		if (element.src) {
+			defaultStyleCache[element.src] = styles;
+		}
 
 		return styles;
 	};
