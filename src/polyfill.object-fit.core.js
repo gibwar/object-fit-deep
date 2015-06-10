@@ -87,50 +87,6 @@
 		return styles;
 	};
 
-	objectFit.getMatchedStyle = function(element, property){
-		// element property has highest priority
-		var val = null;
-		var inlineval = null;
-
-		if (element.style.getPropertyValue) {
-			inlineval = element.style.getPropertyValue(property);
-		} else if (element.currentStyle) {
-			inlineval = element.currentStyle[property];
-		}
-
-		// get matched rules
-		var rules = window.getMatchedCSSRules(element);
-		var i = rules.length;
-		var r;
-		var important;
-
-		if (i) {
-			// iterate the rules backwards
-			// rules are ordered by priority, highest last
-			for (; i --> 0;) {
-				r = rules[i];
-				important = r.style.getPropertyPriority(property);
-
-				// if set, only reset if important
-				if (val === null || important) {
-					val = r.style.getPropertyValue(property);
-
-					// done if important
-					if (important) {
-						break;
-					}
-				}
-			}
-		}
-
-		// if it's important, we are done
-		if (!val && inlineval !== null) {
-			val = inlineval;
-		}
-
-		return val;
-	};
-
 	// Detects orientation
 	objectFit.orientation = function(replacedElement) {
 		if (replacedElement.parentNode && replacedElement.parentNode.nodeName.toLowerCase() === 'x-object-fit') {
@@ -209,15 +165,12 @@
 		for (property in replacedElementStyles) {
 			switch (property) {
 				default:
-					value = objectFit.getMatchedStyle(replacedElement, property);
-
-					if (value !== null && value !== '') {
-						if (objectFit._debug && window.console) {
-							console.log(property + ': ' + value);
-						}
-
-						wrapperElement.style[property] = value;
+					// Filter out unneeded properties that are functions or are the "0" ~ "210" ones.
+					if (typeof replacedElementStyles[property] === "function" || parseInt(property, 10) > 0) {
+						continue;
 					}
+
+					wrapperElement.style.setProperty(property, replacedElementStyles[property], "");
 				break;
 
 				case 'length':
