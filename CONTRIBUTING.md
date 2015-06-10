@@ -1,6 +1,6 @@
 # Contributing to init
 
-If you got something that's worth including into the project please [submit a Pull Request](https://github.com/anselmh/object-fit/issues) or [open an issue](https://github.com/anselmh/object-fit/issues) for further discussion.
+If you got something that's worth including into the project please [submit a Pull Request](https://github.com/gibwar/object-fit-deep/issues) or [open an issue](https://github.com/gibwar/object-fit-deep/issues) for further discussion.
 
 [@necolas](https://github.com/necolas) [wrote down some good guidelines](https://github.com/necolas/issue-guidelines) for contributing to his projects. Please keep these in mind when contributing to this project. <3
 

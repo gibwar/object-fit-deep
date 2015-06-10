@@ -2,6 +2,13 @@
 
 This is a headless polyfill for the CSS `object-fit` property which defines the sizing mode for content images (similar to background-size for CSS background sources).
 
+# Fork note
+Please note that this is forked off of the original to fulfill some specific needs and probably isn't nearly as graceful as the [one provided by anselmh](https://github.com/anselmh/object-fit). It's original purpose was to handle a matching deep element insertion (such as the case of AngularJS when inserting a full, compiled template in to the DOM) but that ended up being dreadfully slow on IE.
+
+Due to most modern browsers supporting the `object-fit` property, I've only tested this with IE10, IE11, and Firefox 31 ESR. I'm sure I've made changes that'll break older browsers. If any of this concerns you, please use [anselmh/object-fit](https://github.com/anselmh/object-fit) instead.
+
+Because of all of this, I have no intent in releasing this on Bower.
+
 ## The Webstandard
 
 The specification for `object-fit` is to be found at [W3C CSS3 Images](http://www.w3.org/TR/css3-images/#the-object-fit). The property scales the image to fit in a certain way into a defined area, e.g:
@@ -52,8 +59,8 @@ or set up via npm
 
 The `--save` flag is used to store the package dependency in the package.json so it can be automatically fetched next time using `npm install`. Use `--save-dev` to use it only as development dependency (but only do if you are sure you know what you do).
 
-Or set up manually by grabbing the [download from GitHub](https://github.com/anselmh/object-fit/releases).
-Then include the CSS file [`polyfill.object-fit.css`](https://github.com/anselmh/object-fit/blob/master/dist/polyfill.object-fit.css) in your HTML `<head>`, the JavaScript file [`polyfill.object-fit.min.js`](https://github.com/anselmh/object-fit/blob/master/dist/polyfill.object-fit.min.js) at the bottom of your HTML `<body>`. Right behind the JavaScript file reference you now need to call the polyfill:
+Or set up manually by grabbing the [download from GitHub](https://github.com/gibwar/object-fit-deep/releases).
+Then include the CSS file [`polyfill.object-fit.css`](https://github.com/gibwar/object-fit-deep/blob/master/dist/polyfill.object-fit.css) in your HTML `<head>`, the JavaScript file [`polyfill.object-fit.min.js`](https://github.com/gibwar/object-fit-deep/blob/master/dist/polyfill.object-fit.min.js) at the bottom of your HTML `<body>`. Right behind the JavaScript file reference you now need to call the polyfill:
 
 	<script>
 		objectFit.polyfill({
@@ -63,7 +70,7 @@ Then include the CSS file [`polyfill.object-fit.css`](https://github.com/anselmh
 		});
 	</script>
 
-You can find sample implementations in our [test directory](https://github.com/anselmh/object-fit/tree/master/tests).
+You can find sample implementations in our [test directory](https://github.com/gibwar/object-fit-deep/tree/master/tests).
 
 
 ## Testing
@@ -83,7 +90,7 @@ For example you need to set the header to:
 
 	'Access-Control-Allow-Origin: *'
 
-This should fix [the issue](https://github.com/anselmh/object-fit/issues/7). If you also need to support credentials, [you can’t use `*`](#25) but need the server reply with two headers (server needs also to reply with `Access-Control-Allow-Credentials: true`), one of which includes the origin in question.
+This should fix [the issue](https://github.com/gibwar/object-fit-deep/issues/7). If you also need to support credentials, [you can’t use `*`](#25) but need the server reply with two headers (server needs also to reply with `Access-Control-Allow-Credentials: true`), one of which includes the origin in question.
 
 It is recommended to add the attribute `crossorigin=""` to your CSS `link` element that is called from the external resource to indicate what type of CORS the server should reply with.
 

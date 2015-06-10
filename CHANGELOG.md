@@ -2,6 +2,19 @@
 
 ### HEAD
 
+### 0.4.2-deep (June 10th, 2015)
+* Removed `element.closest()` polyfill as it's not needed anymore.
+* Removed `getMatchedCSSRules` polyfill since it's dreadfully slow and Chrome is depreciating it in Chrome 41. It seems
+that `getComputedStyle` is close enough for my purposes.
+* Moved the resize event handler to a global level, reducing the number of listeners when a large number of elements
+are replaced
+* Added default style caching for image elements. It assumes that the image retrieved won't change during this session.
+This drastically speeds up when replacing multiple elements with the same image.
+* Filters out CSS2Property things that can cause Firefox 31 to error out on.
+* Changed to a scanning model when elements are inserted. The previous model would miss deeply nested elements that
+would've matched had it looked. This also allows for multiple mutations to occur before processing them in a vague
+attempt to keep somewhat 'responsive'.
+
 ### 0.4.2 (June, 8th, 2015)
 * Use [external `element.closest()` polyfill](https://github.com/jonathantneal/closest) via npm (#30), small performance win
 * Use [external rAF polyfill](https://github.com/ngryman/raf.js) via npm (#30)
